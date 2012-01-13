@@ -147,4 +147,140 @@ class ArrayToolbox
 		return $result;
 	}
 	
+	public static function xor_values($left, $right) {
+		if (!self::isIterable($left) || !self::isIterable($right)) {
+			throw new Exception("Can't loop over the variables given");
+		}
+		$L = self::and_not_values($left, $right);
+		$R = self::and_not_values($right, $left);
+		$LuR = array_merge($L, $R);
+		$LnR = array_intersect($L, $R);
+		return self::and_not_values($LuR, $LnR);
+	}
+	
+	public static function xor_keys($left, $right) {
+		if (!self::isIterable($left) || !self::isIterable($right)) {
+			throw new Exception("Can't loop over the variables given");
+		}
+		return 
+			self::and_not_keys(
+				self::or_keys($left, $right), // Ab, aB, AB.
+				self::and_keys($left, right)  // AB
+			);
+	}
+	
+	public static function and_not_keys($left, $right) {
+		if (!self::isIterable($left) || !self::isIterable($right)) {
+			throw new Exception("Can't loop over the variables given");
+		}
+		$known = array();
+		foreach ($right as $key => $val) {
+			$known[] = $key;
+			$val = $val;
+		}
+		$result = array();
+		foreach ($left as $key => $val) {
+			if (!in_array($key, $known)) {
+				$result[$key] = $val;
+			}
+		}
+		
+		return $result;
+	}
+	
+	public static function and_not_values($left, $right) {
+		if (!self::isIterable($left) || !self::isIterable($right)) {
+			throw new Exception("Can't loop over the variables given");
+		}
+		$known = array();
+		foreach ($right as $val) {
+			$known[] = $val;
+		}
+		$result = array();
+		foreach ($left as $key => $val) {
+			if (!in_array($val, $known)) {
+				$result[$key] = $val;
+			}
+		}
+		
+		return $result;
+	}
+	
+	public static function and_values($left, $right) {
+		if (!self::isIterable($left) || !self::isIterable($right)) {
+			throw new Exception("Can't loop over the variables given");
+		}
+		$known = array();
+		foreach ($right as $val) {
+			$known[] = $val;
+		}
+		$result = array();
+		foreach ($left as $key => $val) {
+			if (in_array($val, $known)) {
+				$result[$key] = $val;
+			}
+		}
+		
+		return $result;
+	}
+	
+	public static function and_keys($left, $right) {
+		if (!self::isIterable($left) || !self::isIterable($right)) {
+			throw new Exception("Can't loop over the variables given");
+		}
+		$known = array();
+		foreach ($right as $key => $val) {
+			$known[] = $key;
+		}
+		$result = array();
+		foreach ($left as $key => $val) {
+			if (in_array($key, $known)) {
+				$result[$key] = $val;
+			}
+		}
+		
+		return $result;
+	}
+	
+	public static function or_keys($left, $right) {
+		$result = array();
+		foreach ($left as $key => $val) {
+			$result[$key] = $val;
+		}
+		foreach ($right as $key => $val) {
+			$result[$key] = $val;
+		}
+		return $result;
+	}
+	
+	public static function or_values($left, $right) {
+		$result = array();
+		foreach ($left as $key => $val) {
+			if (!in_array($val, $result)) {
+				$result[$key] = $val;
+			}
+		}
+		foreach ($right as $key => $val) {
+			if (!in_array($val, $result)) {
+				if (!isset($result[$key])) {
+					$result[$key] = $val;
+				} else {
+					$result[] = $val;
+				}
+			}
+		}
+		return $result;
+	}
+	
 }
+
+/*
+
+$left = array("cat" => 1, "dog" => 2, "mouse" => 3);
+$right = array("car" => 2, "truck" => 3, "moped" => 4);
+var_dump(ArrayToolbox::and_values($left, $right));
+var_dump(ArrayToolbox::or_values($left, $right));
+var_dump(ArrayToolbox::and_not_values($left, $right));
+var_dump(ArrayToolbox::xor_values($left, $right));
+
+ */
