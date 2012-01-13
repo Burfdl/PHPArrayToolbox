@@ -283,4 +283,40 @@ var_dump(ArrayToolbox::or_values($left, $right));
 var_dump(ArrayToolbox::and_not_values($left, $right));
 var_dump(ArrayToolbox::xor_values($left, $right));
 
+$petOwners = array(
+	array(
+		"name" => "robert",
+		"pet" => array(
+			"type" => "cat",
+			"name" => "Mr Whiskers"
+		)
+	),
+	array(
+		"name" => "susan",
+		"pet" => array(
+			"type" => "dog",
+			"name" => "fido"
+		)
+	),
+	array(
+		"name" => "paul",
+		"pet" => "none"
+	)
+);
+
+// expecting: array("Mr Whiskers", "Fido", NULL)
+var_dump(ArrayToolbox::collect($petOwners, array("pet", "name")));
+
+$productIDs = array(
+	1234,
+	5678,
+);
+$productNames = array(
+	"Toaster",
+	"Kettle",
+);
+
+// expecting: array(0 => array("ID" => 1234, "Name" => "Toaster"), 1 => array("ID" => 5678, "Name" => "Kettle"))
+var_dump(ArrayToolbox::rotateArray(array("ID" => $productIDs, "Name" => $productNames)));
+
  */
